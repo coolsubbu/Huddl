@@ -6,18 +6,24 @@ This project consists of both supervised and unsupervised methods of classifying
 The Pipeline consists of 
 
 a)Data Preparation 
+
 b)Feature Extraction 
+
 c)Classification
 
 A. Data Preparation:
 
    a.Read the csv
+   
    b.For each mail, remove the fields of the email such as From,To
+   
    c.Extract the mail content 
    
 B.Feature Extraction:
     
-     
+    Using spacy tagger to find out Parts of speech and dependency parser in addition to lemmatization.
+    
+         
 C. Unsupervised Classification:
     Establish rules for classifying sentences into actionable and non-actionable.
 
@@ -34,4 +40,6 @@ Challenges in Data Preparation:
    e.  different types of marking of EOM. " ******* " / " _______" /-=-=-=-=-=-=-=-=-=-=- "
    
    f. remnants and residuals of solutions to above issues.
+   
+   g. Verifying the sentences above 100k sentences
    
