@@ -17,7 +17,15 @@ A. Data Preparation:
    
 B.Feature Extraction:
     
-    a.Using Spacy POS Tagger, parts of speech was extracted.
-
+     
 C. Unsupervised Classification:
     Establish rules for classifying sentences into actionable and non-actionable.
+
+Challenges in Data Preparation:
+   a. Sentence and field separation. Fields such as From / To are separated by '\n' whereas sentences are separated by period. Along with that period also comes in salutations ('Mr.' and  sequences indices such as '1.' )
+   b. mail ids in text 
+   c. Forwarding text of a mail
+   d. HTML links and html tags in mail
+   e.  different types of marking of EOM. " ******* " / " _______" /-=-=-=-=-=-=-=-=-=-=- "
+   f. remnants and residuals of solutions to above issues.
+   
