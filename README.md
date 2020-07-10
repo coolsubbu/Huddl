@@ -22,7 +22,12 @@ A. Data Preparation:
 B.Feature Extraction:
     
     Using spacy tagger to find out Parts of speech and dependency parser in addition to lemmatization.
-    
+
+STEPS TO EXECUTE : 
+a. Config file in json which points to input dataset and url of basepath where the output will be stored.
+b. Create an object of Class Assignment with url of the config file.
+
+
          
 C. Unsupervised Classification:
     Establish rules for classifying sentences into actionable and non-actionable.
@@ -43,3 +48,13 @@ Challenges in Data Preparation:
    
    g. Verifying the sentences above 100k sentences
    
+
+STEPS TO EXECUTE : 
+
+a. Config file in json which points to input dataset and url of basepath where the output will be stored.
+
+b. Create an object of Class Assignment with url of the config file as the parameter.
+
+c.  call function data_preprocess to obtain to preprocess input data 
+
+d.  call the function Sentence_Classification to classify the preprocessed sentences into ACTIONABLE or non ACTIONABLE.          
