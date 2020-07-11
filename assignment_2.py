@@ -276,9 +276,9 @@ class Assignment:
 
         print('reading labeled csv and tokenizing')
 
-        df=pd.read_csv(self.basPath+'TRAINING.csv')
+        #df=pd.read_csv(self.basPath+'TRAINING.csv')
 
-        #df=pd.read_csv(self.config['TRAIN'])
+        df=pd.read_csv(self.config['TRAIN'])
         
         tokenizer = Tokenizer(num_words=MAX_NB_WORDS, filters='!"#$%&()*+,-./:;<=>?@[\]^_`{|}~', lower=True)
 
