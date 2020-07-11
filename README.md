@@ -129,6 +129,11 @@ RECALL = 0.97
 
 F1 = 2PR/(P+R) = 0.96
 
+RESULTS FOR BERT CLASSIFIER: BERT gave a low accuracy so I didn't proceed with it. 
+
+Accuracy: 74%
+      
 REFERENCES :
 
 THANKS TO TEXT CLASSIFICATION KERNELS FROM KAGGLE WHICH USES BERT and LSTM  
+         
