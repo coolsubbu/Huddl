@@ -28,8 +28,12 @@ B.Feature Extraction:
 c) Classification Unsupervised:
     
     Using manual defined rules to classify the Sentences into ACTIONABLE and UNACTIONABLE
-    
- d) Classification Supervised:
+ 
+ d) Classification Supervised (LSTM and Convolutional NN):
+     
+     Using LSTM+CNN Classifier to classify the sentences into ACTIONABLE or NON-ACTIONABLE with training data from Unsupervisedd Classification.
+     
+ e) Classification Supervised (BERT):
  
     Useing BERT Classifier to classify the sentences into ACTIONABLE or NON-ACTIONABLE with training data from unspervised Classification
 
@@ -47,7 +51,20 @@ e. run the Data Process method from the object.
 
 f. Run the SentenceClassification (Unsupervised) from the object.
 
-e For Supervised Classification: Go To https://colab.research.google.com/drive/11ZOIiF4vDVev9n47v4nJ4CkakL19E65A#scrollTo=HAah8tMgosYz
+g. Run the Supervised Classification from the object.
+
+    LSTM+CNN Supervised Sentence Classification :
+    
+    * Result of the Unsupervised Classification and Actions file are both imbibed into Training file.
+    
+    * The Training File is string indexed using a Tokenizer and spllit into Train / Test using train_test_split strategy.
+    
+    * a Sequential Keras model with Embedding + Convolution + LSTM (100 units) + Dense +Sigmoid is constructed 
+    
+    * model is fit to train data and evaluated with Test Data.
+    
+
+h. For Supervised Classification using BERT: Go To https://colab.research.google.com/drive/11ZOIiF4vDVev9n47v4nJ4CkakL19E65A#scrollTo=HAah8tMgosYz
    
    * We obtain Train and Test from the results of  Unsupervised learning using train_test_split strategy.
    
@@ -92,8 +109,9 @@ CHALLENGES IN DATA PREPARATION:
    f. remnants and residuals of solutions to above issues.
    
    g. Verifying the sentences above 100k sentences
-   
-CHALLENGES IN SUPERVISED CLASSIFICATION:
+ 
+ 
+CHALLENGES IN BERT SUPERVISED CLASSIFICATION:
 
 GPU / TPU required for indexing of BERT and Model fitting of BERT .  Using a smaller Dataset.
       
@@ -101,4 +119,4 @@ GPU / TPU required for indexing of BERT and Model fitting of BERT .  Using a sma
 
 REFERENCES :
 
-THANKS TO TEXT CLASSIFICATION KERNELS FROM KAGGLE WHICH USES BERT .  
+THANKS TO TEXT CLASSIFICATION KERNELS FROM KAGGLE WHICH USES BERT                                                                                                 and LSTM  
