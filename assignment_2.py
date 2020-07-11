@@ -290,7 +290,7 @@ class Assignment:
 
         print(time.asctime())
 
-        # load the dataset but only keep the top n words, zero the rest
+        # load the vocabulary data but only keep the top n words, zero the rest
 
         top_words = 50000
 
@@ -355,3 +355,4 @@ if __name__=='__main__':
      #Assign1.data_preprocess()
      #Assign1.SentenceClassificationUnsupervised()
      Assign1.SentenceClassificationSupervised()
+   
