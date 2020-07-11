@@ -115,15 +115,14 @@ CHALLENGES IN BERT SUPERVISED CLASSIFICATION:
 
 GPU / TPU required for indexing of BERT and Model fitting of BERT .  Using a smaller Dataset.
       
-RESULTS on TEST SET:
+RESULTS on TEST SET FROM LSTM + CNN Sentence Classifier:
 
-         PREDICT->  NON-ACTIONABLE ACTIONABLE
-True NON_ACT        [4946             64]
-True ACT            [ 110             1130]
+PRECISION = 0.96
 
-PRECISION = 1130/1130+64 = 94%
-RECALL = 1130/1130+110 =   91%
-F1 = 2PR/(P+R) = 0.92
+RECALL = 0.97  
+
+F1 = 2PR/(P+R) = 0.96
+
 REFERENCES :
 
-THANKS TO TEXT CLASSIFICATION KERNELS FROM KAGGLE WHICH USES BERT                                                                                                 and LSTM  
+THANKS TO TEXT CLASSIFICATION KERNELS FROM KAGGLE WHICH USES BERT and LSTM  
