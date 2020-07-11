@@ -117,9 +117,9 @@ GPU / TPU required for indexing of BERT and Model fitting of BERT .  Using a sma
       
 RESULTS on TEST SET FROM LSTM + CNN Sentence Classifier:
 
-TOTAL NUMBER OF RECORDS: ~120k  
+TOTAL NUMBER OF RECORDS: ~145k  
 
-ACTIONABLE:~60k
+ACTIONABLE:~60k         
 
 NON-ACTIONABLE:~85k
 
