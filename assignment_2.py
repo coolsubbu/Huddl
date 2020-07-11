@@ -3,6 +3,30 @@ import re
 import spacy
 import json
 import time
+import keras
+import numpy
+from keras.datasets import imdb
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import LSTM
+from keras.layers.convolutional import Conv1D
+from keras.layers.convolutional import MaxPooling1D
+from keras.layers.embeddings import Embedding
+from keras.preprocessing import sequence
+import time
+# fix random seed for reproducibility
+numpy.random.seed(7)
+from keras.preprocessing.text import Tokenizer
+from keras.preprocessing.sequence import pad_sequences
+from sklearn.model_selection import train_test_split
+import pandas as pd
+import sklearn.metrics as sm
+
+
+
+def diff_timstamp():
+       print(time.strftime("%Y-%m-%d-%H-%M",time.gmtime()))
+
 
 class Assignment:
 
@@ -76,7 +100,8 @@ class Assignment:
           
           if i%250==0:
                print('mail_strings:'+str(mail_strings)+'\n')
-
+               diff_timstamp()
+               
           mail=' '.join(mail_strings)
 
        
@@ -151,7 +176,7 @@ class Assignment:
         self.sentence_df.to_csv(self.basPath+"sentences_571.csv")
 
           
-    def SentenceClassification(self):
+    def SentenceClassificationUnsupervised(self):
 
         sentence_cls_df_dict={}
         sentence_cls_df_list=[]
@@ -161,10 +186,10 @@ class Assignment:
         for i,v in self.sentence_df.iterrows():
             sentence=v['sentence']
             v['class']='empty'
-            if 'your thoughts' in sentence or 'kindly' in sentence or 'as discussed' in sentence or 'needs to' in sentence:
+            if 'your thoughts' in sentence or 'kindly' in sentence or 'as discussed' in sentence or 'needs to' in sentence or 'let me know' in sentence: 
                 v['class']='ACTIONABLE'
                 
-            if 'better if' in sentence or 'need' in sentence or 'could use' in sentence:
+            if 'better if' in sentence or 'need' in sentence or 'could use' in sentence or "make sure" in sentence:
                v['class']='ACTIONABLE' 
                #print('ACTIONABLE')
               
@@ -189,7 +214,11 @@ class Assignment:
             #    if token.pos_ not in Pos_dict:
             #        Pos_dict[token.pos_]=[]
             #       Pos_dict[token.pos_].append(j1)
-               
+
+            if i%1000==0:
+                print(i)
+                diff_timstamp()
+                
             k1=0                                        
             for token in spacy_pos:
                #print(token.text, token.pos_, token.tag_, token.dep_)
@@ -227,17 +256,102 @@ class Assignment:
                               v['class']='ACTIONABLE'
                k1=k1+1
             if v['class']=='empty':
-              v['class']='NON-ACTIONABLE'
+                v['class']='NON-ACTIONABLE'
+                v['class_int']=0
+            else:
+                v['class_int']=1
+                
             sentence_cls_df_list.append(v)
         sentence_cls_df=pd.DataFrame(sentence_cls_df_list,columns=list(sentence_cls_df_list[0].keys()))
         sentence_cls_df.to_csv(self.basPath+'sentence_classified_sb.csv')
-        sentence_cls_file_df=pd.DataFrame(sentence_cls_df_list,columns=['sentence','class'])
+        sentence_cls_file_df=pd.DataFrame(sentence_cls_df_list,columns=['sentence','class','class_int'])
         sentence_cls_file_df.to_csv(self.basPath+'sentence_classified_file_1.csv')
                                     
+    def SentenceClassificationSupervised(self):
+
+         
+        MAX_NB_WORDS = 50000
+
+        print(time.asctime())
+
+        print('reading labeled csv and tokenizing')
+
+        df=pd.read_csv(self.basPath+'TRAINING.csv')
+
+        #df=pd.read_csv(self.config['TRAIN'])
+        
+        tokenizer = Tokenizer(num_words=MAX_NB_WORDS, filters='!"#$%&()*+,-./:;<=>?@[\]^_`{|}~', lower=True)
+
+        tokenizer.fit_on_texts(df['sentence'].values)
+
+        word_index = tokenizer.word_index
+
+        print('read words and tokenized')
+
+        print(time.asctime())
+
+        # load the dataset but only keep the top n words, zero the rest
+
+        top_words = 50000
+
+
+        X = tokenizer.texts_to_sequences(df['sentence'].values)
+
+
+        Y = df['class_int'].values
+
+        X_train, X_test, Y_train, Y_test = train_test_split(X,Y, test_size = 0.2, random_state = 42)
+
+        #print('Shape of data tensor:', X.shape)
+
+
+        print(X_train[0])
+        print(Y_train[0])
+
+        #maximum length of a sequence 50 words
+        max_length = 50
+        
+        X_train = sequence.pad_sequences(X_train, maxlen=max_length)
+        X_test = sequence.pad_sequences(X_test, maxlen=max_length)
+
+        # create the model
+
+        embedding_vecor_length = 100
+        model = Sequential()
+
+        model.add(Embedding(top_words, embedding_vecor_length, input_length=max_length))
+        model.add(Conv1D(filters=32, kernel_size=3, padding='same', activation='relu'))
+        model.add(MaxPooling1D(pool_size=2))
+        model.add(LSTM(100))
+        model.add(Dense(1, activation='sigmoid'))
+        model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+        print(model.summary())
+
+        model.fit(X_train, Y_train, epochs=2, batch_size=64)
+
+        # Final evaluation of the model
+
+        scores = model.evaluate(X_test, Y_test, verbose=0)
+
+        print("Accuracy: %.2f%%" % (scores[1]*100))
+
+        Y_pred=model.predict_classes(X_test)
+
+        tn,fp,fn,tp=sm.confusion_matrix(Y_test,Y_pred).ravel()
+
+        precision=tp/(1+tp+fp)
+        recall=tp/(tp+fn+1)
+        f1=2*precision*recall/(precision+recall)
+
+        print("PRECISION: %.2f%%" % precision)
+        print("RECALL: %.2f%%" % recall)
+        print("F1 SCORE: %.2f%%" % f1)
 
 
              
 if __name__=='__main__':
      Assign1=Assignment("C:/Users/lenovo/Downloads/Assignment_1/config.json")
-     Assign1.data_preprocess()
-     Assign1.SentenceClassification()
+     #Assign1.data_preprocess()
+     #Assign1.SentenceClassificationUnsupervised()
+     Assign1.SentenceClassificationSupervised()
