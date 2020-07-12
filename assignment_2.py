@@ -37,7 +37,10 @@ class Assignment:
         self.nlp= spacy.load("en_core_web_sm")
         self.tagr=spacy.load('en')
         print("loaded spacy nlp tagger model ")
-
+       
+        assert self.nlp, ' could not load spacy model '
+       
+       
         print('reading input csv and sanity check')
 
         self.config_file_handle=open(config_file_url,"r",encoding='utf-8')
