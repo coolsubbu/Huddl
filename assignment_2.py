@@ -22,6 +22,8 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 import sklearn.metrics as sm
 
+
+
 def diff_timstamp():
        print(time.strftime("%Y-%m-%d-%H-%M",time.gmtime()))
 
@@ -36,11 +38,12 @@ class Assignment:
 
         self.nlp= spacy.load("en_core_web_sm")
         self.tagr=spacy.load('en')
+
+        
         print("loaded spacy nlp tagger model ")
-       
-        assert self.nlp, ' could not load spacy model '
-       
-       
+
+        assert self.nlp,' could not load spacy model'
+        
         print('reading input csv and sanity check')
 
         self.config_file_handle=open(config_file_url,"r",encoding='utf-8')
@@ -174,9 +177,10 @@ class Assignment:
 
         self.sentence_df=pd.DataFrame(sentence_df_list,columns=list(sentence_df_list[0].keys()))
 
+        assert self.sentence_df, 'could not create sentence df from list'
+        
         self.sentence_df.to_csv(self.basPath+"sentences_571.csv")
-        
-        
+
           
     def SentenceClassificationUnsupervised(self):
 
@@ -188,16 +192,13 @@ class Assignment:
         for i,v in self.sentence_df.iterrows():
             sentence=v['sentence']
             v['class']='empty'
-              
-            # if these phrases are in the sentence , then it is actionable    
             if 'your thoughts' in sentence or 'kindly' in sentence or 'as discussed' in sentence or 'needs to' in sentence or 'let me know' in sentence: 
                 v['class']='ACTIONABLE'
                 
             if 'better if' in sentence or 'need' in sentence or 'could use' in sentence or "make sure" in sentence:
                v['class']='ACTIONABLE' 
                #print('ACTIONABLE')
-            
-             
+              
             spacy_pos=self.nlp(sentence)
             #print(sentence)
             DEP=[tok.dep_ for tok in spacy_pos]
@@ -271,6 +272,9 @@ class Assignment:
         sentence_cls_df.to_csv(self.basPath+'sentence_classified_sb.csv')
         sentence_cls_file_df=pd.DataFrame(sentence_cls_df_list,columns=['sentence','class','class_int'])
         sentence_cls_file_df.to_csv(self.basPath+'sentence_classified_file_1.csv')
+
+        assert sentence_cls_file_df, 'could not  create dataframe for classified sentences'
+        
                                     
     def SentenceClassificationSupervised(self):
 
@@ -281,12 +285,17 @@ class Assignment:
 
         print('reading labeled csv and tokenizing')
 
-        #df=pd.read_csv(self.basPath+'TRAINING.csv')
+        #df=pd.read_csv(self.basPath+'TRAIN_1.csv')
 
         df=pd.read_csv(self.config['TRAIN'])
+
+        assert df,'could not find TRAIN FILE'
         
+        #build a tokenizer 
         tokenizer = Tokenizer(num_words=MAX_NB_WORDS, filters='!"#$%&()*+,-./:;<=>?@[\]^_`{|}~', lower=True)
 
+        #tokenising the sentences
+        
         tokenizer.fit_on_texts(df['sentence'].values)
 
         word_index = tokenizer.word_index
@@ -295,11 +304,12 @@ class Assignment:
 
         print(time.asctime())
 
-        # load the vocabulary data but only keep the top n words, zero the rest
+        # load the dataset but only keep the top n words, zero the rest
 
         top_words = 50000
-
-
+                                                  
+        #convert sentence array to a sequence of integers
+        
         X = tokenizer.texts_to_sequences(df['sentence'].values)
 
 
@@ -308,7 +318,6 @@ class Assignment:
         X_train, X_test, Y_train, Y_test = train_test_split(X,Y, test_size = 0.2, random_state = 42)
 
         #print('Shape of data tensor:', X.shape)
-
 
         print(X_train[0])
         print(Y_train[0])
@@ -324,6 +333,7 @@ class Assignment:
         embedding_vecor_length = 100
         model = Sequential()
 
+        #building layers of ANN Model
         model.add(Embedding(top_words, embedding_vecor_length, input_length=max_length))
         model.add(Conv1D(filters=32, kernel_size=3, padding='same', activation='relu'))
         model.add(MaxPooling1D(pool_size=2))
@@ -343,6 +353,8 @@ class Assignment:
 
         Y_pred=model.predict_classes(X_test)
 
+        # catch the metriccs of evaluation for Classification
+        
         tn,fp,fn,tp=sm.confusion_matrix(Y_test,Y_pred).ravel()
 
         precision=tp/(1+tp+fp)
@@ -357,7 +369,6 @@ class Assignment:
              
 if __name__=='__main__':
      Assign1=Assignment("C:/Users/lenovo/Downloads/Assignment_1/config.json")
-     #Assign1.data_preprocess()
-     #Assign1.SentenceClassificationUnsupervised()
+     Assign1.data_preprocess()
+     Assign1.SentenceClassificationUnsupervised()
      Assign1.SentenceClassificationSupervised()
-   
