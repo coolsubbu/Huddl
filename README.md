@@ -137,3 +137,4 @@ REFERENCES :
 
 THANKS TO TEXT CLASSIFICATION KERNELS FROM KAGGLE WHICH USES BERT and LSTM  
          
+1.https://towardsdatascience.com/multi-class-text-classification-with-lstm-using-tensorflow-2-0-d88627c10a35
