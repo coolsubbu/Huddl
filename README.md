@@ -76,11 +76,7 @@ CHALLENGES IN DATA PREPARATION:
    
    g. Verifying the sentences above 100k sentences
  
- 
-CHALLENGES IN BERT SUPERVISED CLASSIFICATION:
 
-GPU / TPU required for indexing of BERT and Model fitting of BERT .  Using a smaller Dataset.
-      
 RESULTS on TEST SET FROM LSTM + CNN Sentence Classifier:
 
 TOTAL NUMBER OF RECORDS: ~145k  
