@@ -22,8 +22,6 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 import sklearn.metrics as sm
 
-
-
 def diff_timstamp():
        print(time.strftime("%Y-%m-%d-%H-%M",time.gmtime()))
 
@@ -174,7 +172,8 @@ class Assignment:
         self.sentence_df=pd.DataFrame(sentence_df_list,columns=list(sentence_df_list[0].keys()))
 
         self.sentence_df.to_csv(self.basPath+"sentences_571.csv")
-
+        
+        
           
     def SentenceClassificationUnsupervised(self):
 
@@ -186,13 +185,16 @@ class Assignment:
         for i,v in self.sentence_df.iterrows():
             sentence=v['sentence']
             v['class']='empty'
+              
+            # if these phrases are in the sentence , then it is actionable    
             if 'your thoughts' in sentence or 'kindly' in sentence or 'as discussed' in sentence or 'needs to' in sentence or 'let me know' in sentence: 
                 v['class']='ACTIONABLE'
                 
             if 'better if' in sentence or 'need' in sentence or 'could use' in sentence or "make sure" in sentence:
                v['class']='ACTIONABLE' 
                #print('ACTIONABLE')
-              
+            
+             
             spacy_pos=self.nlp(sentence)
             #print(sentence)
             DEP=[tok.dep_ for tok in spacy_pos]
