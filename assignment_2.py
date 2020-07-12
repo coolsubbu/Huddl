@@ -70,13 +70,13 @@ class Assignment:
         
     def data_preprocess(self):
        
-        i1=0
-        sentence_df_list=[]
-        sentence_df_dict={}
+       i1=0
+       sentence_df_list=[]
+       sentence_df_dict={}
                  
-        print(time.asctime())       
-        for i,v in self.input_df.iterrows():
-
+       print(time.asctime())       
+       for i,v in self.input_df.iterrows():
+         
           v_dict={}
 
           mail_strings=v['message'].split('\n')
@@ -175,11 +175,11 @@ class Assignment:
             break
           i1=i1+1
 
-        self.sentence_df=pd.DataFrame(sentence_df_list,columns=list(sentence_df_list[0].keys()))
+       self.sentence_df=pd.DataFrame(sentence_df_list,columns=list(sentence_df_list[0].keys()))
 
-        assert self.sentence_df, 'could not create sentence df from list'
+       assert len(self.sentence_df)>0 , ' sentence df extracted is empty '  
         
-        self.sentence_df.to_csv(self.basPath+"sentences_571.csv")
+       self.sentence_df.to_csv(self.basPath+"sentences_571.csv")
 
           
     def SentenceClassificationUnsupervised(self):
@@ -273,7 +273,7 @@ class Assignment:
         sentence_cls_file_df=pd.DataFrame(sentence_cls_df_list,columns=['sentence','class','class_int'])
         sentence_cls_file_df.to_csv(self.basPath+'sentence_classified_file_1.csv')
 
-        assert sentence_cls_file_df, 'could not  create dataframe for classified sentences'
+        assert len(sentence_cls_file_df)>0 , ' empty sentence classified dataframe'  
         
                                     
     def SentenceClassificationSupervised(self):
@@ -289,7 +289,7 @@ class Assignment:
 
         df=pd.read_csv(self.config['TRAIN'])
 
-        assert df,'could not find TRAIN FILE'
+        assert len(df)>0 ,' empty TRAIN FILE'
         
         #build a tokenizer 
         tokenizer = Tokenizer(num_words=MAX_NB_WORDS, filters='!"#$%&()*+,-./:;<=>?@[\]^_`{|}~', lower=True)
@@ -333,7 +333,7 @@ class Assignment:
         embedding_vecor_length = 100
         model = Sequential()
 
-        #building layers of ANN Model
+        #building  layers of ANN Model
         model.add(Embedding(top_words, embedding_vecor_length, input_length=max_length))
         model.add(Conv1D(filters=32, kernel_size=3, padding='same', activation='relu'))
         model.add(MaxPooling1D(pool_size=2))
