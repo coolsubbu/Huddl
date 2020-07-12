@@ -33,10 +33,6 @@ c) Classification Unsupervised:
      
      Using LSTM+CNN Classifier to classify the sentences into ACTIONABLE or NON-ACTIONABLE with training data from Unsupervisedd Classification.
      
- e) Classification Supervised (BERT):
- 
-    Useing BERT Classifier to classify the sentences into ACTIONABLE or NON-ACTIONABLE with training data from unspervised Classification
-
 STEPS TO EXECUTE : 
 
 a. Install the required set of python packages: spacy,numpy,pandas,tensorflow,tqdm 
@@ -63,36 +59,6 @@ g. Run the Supervised Classification from the object.
     
     * model is fit to train data and evaluated with Test Data.
     
-
-h. For Supervised Classification using BERT: Go To https://colab.research.google.com/drive/11ZOIiF4vDVev9n47v4nJ4CkakL19E65A#scrollTo=HAah8tMgosYz
-   
-   * We obtain Train and Test from the results of  Unsupervised learning using train_test_split strategy.
-   
-   * Upload the TRAIN and TEST files using the cell for uploading in google colab link                 
-   
-   *  Run ALL the cells in Google colab link https://colab.research.google.com/drive/11ZOIiF4vDVev9n47v4nJ4CkakL19E65A#scrollTo=HAah8tMgosYz :
-   
-   * IPython script will download BERT MODEL from "https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12/1"
-   
-   * The steps involved in Supervised Classification of sentences are as follows:
-       
-       +  install the packages bert-for-tf2 and sentencepiece
-       
-       +  invoking Bert Embedding layer from https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12/1 with Trainable to True for tuning BERT.
-       
-       +  Inserting [CLS] and Appending [SEP] to each sentence in Data Set.
-       
-       +  Using Bert Tokenizer, tokenizing the words to word_ids  
-       
-       +  Adding Masks and Segments for each sentence.
-       
-       +  Defining a model with Bert Layer Embedding + Global Average Pooling + Dropout + Dense Layer with an output of sigmoid for binary classification
-       
-       +  Using Adam Optimizer for optimising the model.
-       
-       +  Output label is indexed to 1 for ACTIONABLE and 0 for NON-ACTIONABLE 
-       
-       + Fitting the model to indexed word_ids,segments and masks obtained for each sentence from the Train dataframe along with 0-1 indexed Labels
 
 CHALLENGES IN DATA PREPARATION:  
 
@@ -129,12 +95,9 @@ RECALL = 0.97
 
 F1 = 2PR/(P+R) = 0.96
 
-RESULTS FOR BERT CLASSIFIER: BERT gave a low accuracy so I didn't proceed with it. 
-
-Accuracy: 74%
       
 REFERENCES :
 
-THANKS TO TEXT CLASSIFICATION KERNELS FROM KAGGLE WHICH USES BERT and LSTM  
+THANKS TO TEXT CLASSIFICATION KERNELS FROM KAGGLE WHICH USES LSTM  
          
 1.https://towardsdatascience.com/multi-class-text-classification-with-lstm-using-tensorflow-2-0-d88627c10a35
