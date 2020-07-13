@@ -21,7 +21,8 @@ from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 import pandas as pd
 import sklearn.metrics as sm
-
+import flask
+import pickle
 
 
 def diff_timstamp():
@@ -67,6 +68,10 @@ class Assignment:
         self.sentence_df={}   
                                                
         self.basPath=self.config["BASEPATH"]
+
+        self.sup_sentence_df={}
+
+        self.ML_model=None
         
     def data_preprocess(self):
        
@@ -287,18 +292,20 @@ class Assignment:
 
         #df=pd.read_csv(self.basPath+'TRAIN_1.csv')
 
-        df=pd.read_csv(self.config['TRAIN'])
+        self.sup_sentence_df=pd.read_csv(self.config['TRAIN'])
 
+        df=self.sup_sentence_df
+        
         assert len(df)>0 ,' empty TRAIN FILE'
         
         #build a tokenizer 
-        tokenizer = Tokenizer(num_words=MAX_NB_WORDS, filters='!"#$%&()*+,-./:;<=>?@[\]^_`{|}~', lower=True)
+        self.tokenizer = Tokenizer(num_words=MAX_NB_WORDS, filters='!"#$%&()*+,-./:;<=>?@[\]^_`{|}~', lower=True)
 
         #tokenising the sentences
         
-        tokenizer.fit_on_texts(df['sentence'].values)
+        self.tokenizer.fit_on_texts(df['sentence'].values)
 
-        word_index = tokenizer.word_index
+        word_index = self.tokenizer.word_index
 
         print('read words and tokenized')
 
@@ -310,7 +317,7 @@ class Assignment:
                                                   
         #convert sentence array to a sequence of integers
         
-        X = tokenizer.texts_to_sequences(df['sentence'].values)
+        X = self.tokenizer.texts_to_sequences(df['sentence'].values)
 
 
         Y = df['class_int'].values
@@ -353,22 +360,65 @@ class Assignment:
 
         Y_pred=model.predict_classes(X_test)
 
+        self.ML_model=model
+        
         # catch the metriccs of evaluation for Classification
         
         tn,fp,fn,tp=sm.confusion_matrix(Y_test,Y_pred).ravel()
 
-        precision=tp/(1+tp+fp)
-        recall=tp/(tp+fn+1)
+        precision=tp/(tp+fp)
+        recall=tp/(tp+fn)
+        
         f1=2*precision*recall/(precision+recall)
 
         print("PRECISION: %.2f%%" % precision)
         print("RECALL: %.2f%%" % recall)
         print("F1 SCORE: %.2f%%" % f1)
 
+        #df['PREDICTION']=Y_pred
 
-             
+        pickle.dump(self.tokenizer,open(self.basPath+"tokenizer.h5","wb")) 
+
+        model.save(self.basPath+'model')
+        
+        self.sup_sentence_df.to_csv(self.basPath+'PREDICTION.csv')
+
+    def predict_test(self,test_df):
+
+        self.tokenizer=pickle.load(open(self.basPath+'tokenizer.h5',"rb"))
+         
+        Test_sequences = self.tokenizer.texts_to_sequences(test_df['sentence'].values)
+
+        Test_output =test_df['class_int'].values
+
+        max_length=50
+    
+        Test_pad_sequences=sequence.pad_sequences(Test_sequences,maxlen=max_length)
+
+        model_=keras.models.load_model(self.basPath+'model')
+
+        Y_pred=model_.predict_classes(Test_pad_sequences)
+
+        test_df['Prediction']=Y_pred
+
+        tn,fp,fn,tp=sm.confusion_matrix(test_df['class_int'].values,Y_pred).ravel()
+
+        precision = tp/(tp+fp)
+
+        recall=tp/(tp+fn)
+    
+        f1=2*precision*recall/(precision+recall)
+
+        print("PRECISION: %.2f%%" % precision)
+        print("RECALL: %.2f%%" % recall)
+        print("F1 SCORE: %.2f%%" % f1)
+
+        test_df.to_csv(self.basPath+'test_predicted.csv')
+
 if __name__=='__main__':
      Assign1=Assignment("C:/Users/lenovo/Downloads/Assignment_1/config.json")
-     Assign1.data_preprocess()
-     Assign1.SentenceClassificationUnsupervised()
+     #Assign1.data_preprocess()
+     #Assign1.SentenceClassificationUnsupervised()
      Assign1.SentenceClassificationSupervised()
+     test_df=pd.read_csv(Assign1.config['TRAIN'])
+     Assign1.predict_test(test_df)
