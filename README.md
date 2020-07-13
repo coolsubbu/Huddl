@@ -107,6 +107,17 @@ API: Converted the model into an API
 
 ![image](https://user-images.githubusercontent.com/1144567/87305806-b2fb3400-c534-11ea-972c-8a0bcb550d52.png)
 
+STEPS TO EXECUTE FOR API:
+
+a.Go to api.py
+
+b. Load the Model 
+
+c. Load the Tokenizer
+
+d. execute api.run() to run the server.
+
+e.  go to browser and type http://localhost:5000/api/sentence_classify?sentence='please mail back'           
 
 REFERENCES :
          
