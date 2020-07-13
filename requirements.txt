@@ -1,0 +1,5 @@
+spacy 
+numpy 
+pandas 
+tensorflow 
+tqdm
