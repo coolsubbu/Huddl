@@ -101,9 +101,11 @@ https://drive.google.com/file/d/1dv2pM2hgPI5kEwJFKMklAgF0NPnPKbhc/view?usp=drive
 NOTE: The model needs to be used along with the tokenizer to classify a sentence into Actionable/NON-Actionable.     
 
 
-API:
+API: Converted the model into an API
 
 ![image](https://user-images.githubusercontent.com/1144567/87305515-41bb8100-c534-11ea-8e2f-931a974d544c.png)
+
+![image](https://user-images.githubusercontent.com/1144567/87305806-b2fb3400-c534-11ea-972c-8a0bcb550d52.png)
 
 
 REFERENCES :
