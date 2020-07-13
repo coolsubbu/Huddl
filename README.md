@@ -99,7 +99,13 @@ TRAINED MODEL: It is of size 56MB and highest github could handle is only 25MB. 
 https://drive.google.com/file/d/1dv2pM2hgPI5kEwJFKMklAgF0NPnPKbhc/view?usp=drive_web
 
 NOTE: The model needs to be used along with the tokenizer to classify a sentence into Actionable/NON-Actionable.     
-      
+
+
+API:
+
+![image](https://user-images.githubusercontent.com/1144567/87305515-41bb8100-c534-11ea-8e2f-931a974d544c.png)
+
+
 REFERENCES :
          
 1.https://towardsdatascience.com/multi-class-text-classification-with-lstm-using-tensorflow-2-0-d88627c10a35
