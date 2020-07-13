@@ -93,7 +93,5 @@ F1 = 2PR/(P+R) = 0.96
 
       
 REFERENCES :
-
-THANKS TO TEXT CLASSIFICATION KERNELS FROM KAGGLE WHICH USES LSTM  
          
 1.https://towardsdatascience.com/multi-class-text-classification-with-lstm-using-tensorflow-2-0-d88627c10a35
