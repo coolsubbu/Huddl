@@ -35,7 +35,7 @@ c) Classification Unsupervised:
      
 STEPS TO EXECUTE : 
 
-a. Install the required set of python packages: spacy,numpy,pandas,tensorflow,tqdm 
+a. Install the required set of python packages: pip install -r requirements.txt  
 
 b. Config file in json which points to input dataset,train,test files and url of basepath where the output will be stored.
 
@@ -59,6 +59,10 @@ g. Run the Supervised Classification from the object.
     
     * model is fit to train data and evaluated with Test Data.
     
+LOADING THE MODEL TO PREDICT:
+
+It is a Keras model . It can be loaded by " keras.models.load_model(<<my_model>>) "
+
 
 CHALLENGES IN DATA PREPARATION:  
 
