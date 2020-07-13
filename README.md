@@ -95,6 +95,10 @@ RECALL = 0.97
 
 F1 = 2PR/(P+R) = 0.96
 
+TRAINED MODEL: It is of size 56MB and highest github could handle is only 25MB. It is present in this Google drive link :
+https://drive.google.com/file/d/1dv2pM2hgPI5kEwJFKMklAgF0NPnPKbhc/view?usp=drive_web
+
+NOTE: The model needs to be used along with the tokenizer to classify a sentence into Actionable/NON-Actionable.     
       
 REFERENCES :
          
