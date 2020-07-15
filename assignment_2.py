@@ -112,7 +112,6 @@ class Assignment:
                diff_timstamp()
                
           mail=' '.join(mail_strings)
-
        
           # splitting mail into sentences
           mail=re.sub(r'(Mr|Ms|Dr|Prof|\d)\.','.',mail)
@@ -130,7 +129,8 @@ class Assignment:
           sentences=[re.sub(r'\=(\s|\d+)','',s) for s in sentences]
 
           sentences=[re.sub(r'\=(\d\w)','',s) for s in sentences]
-          
+              
+              
           sentences=[re.sub('\s(.*?)\@(.*?)\s',' ,',s) for s in sentences]
           
           sentences=[s for s in sentences if not re.match(r'^\s*$',s)]
@@ -232,7 +232,7 @@ class Assignment:
             if 'suggest' in LEMMA or 'please' in LEMMA or 'kindly' in TEXT or 'propose' in LEMMA or 'need' in LEMMA:
                     v['class']='ACTIONABLE' 
                     #print('ACTIONABLE')
-               if spacy_pos[0].tag_=='VB':
+            if spacy_pos[0].tag_=='VB':
                     if spacy_pos[1].pos_=='DET' :
                          #print('ACTIONABLE')
                          v['class']='ACTIONABLE'
@@ -422,3 +422,4 @@ if __name__=='__main__':
      Assign1.SentenceClassificationSupervised()
      test_df=pd.read_csv(Assign1.config['TRAIN'])
      Assign1.predict_test(test_df)
+              
