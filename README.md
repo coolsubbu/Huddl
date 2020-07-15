@@ -13,6 +13,10 @@ c)Classification Unsupervised
 
 d) Classification Supervised
 
+e) API creation
+
+f) API Verification
+
 A. Data Preparation:
 
    a.Read the csv
@@ -58,7 +62,12 @@ g. Run the Supervised Classification from the object.
     * a Sequential Keras model with Embedding + Convolution + LSTM (100 units) + Dense +Sigmoid is constructed 
     
     * model is fit to train data and evaluated with Test Data.
-    
+
+h. Run the api.py to start the server.
+
+i) go to http:/localhost:5000/api/sentence_classify?sentence=<<sentence>>
+   
+
 LOADING THE MODEL TO PREDICT:
 
 It is a Keras model . It can be loaded by " keras.models.load_model(<<my_model>>) "
@@ -106,6 +115,7 @@ NOTE: The model needs to be used along with the tokenizer to classify a sentence
 
 API: Converts the model into an API
 
+
 ![image](https://user-images.githubusercontent.com/1144567/87305515-41bb8100-c534-11ea-8e2f-931a974d544c.png)
 
 ![image](https://user-images.githubusercontent.com/1144567/87305806-b2fb3400-c534-11ea-972c-8a0bcb550d52.png)
@@ -122,6 +132,8 @@ d. execute api.run() to run the server.
 
 e.  go to browser and type http://localhost:5000/api/sentence_classify?sentence='please mail back'           
 
+
 REFERENCES :
          
 1.https://towardsdatascience.com/multi-class-text-classification-with-lstm-using-tensorflow-2-0-d88627c10a35
+      
