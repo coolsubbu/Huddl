@@ -88,7 +88,7 @@ class Assignment:
 
           #removing fields and extracting only  mail text content
      
-          mail_strings=[s for s in mail_strings if not re.search(r'\w\:',s)]
+          mail_strings=[s for s in mail_strings if not re.match(r'^\s+\w+\:\s+$',s)]
 
           if i%250==0:
                print('0:'+str(mail_strings)+'\n')
@@ -229,11 +229,7 @@ class Assignment:
             if i%1000==0:
                 print(i)
                 diff_timstamp()
-                
-            k1=0                                        
-            for token in spacy_pos:
-               #print(token.text, token.pos_, token.tag_, token.dep_)
-               if 'suggest' in LEMMA or 'please' in LEMMA or 'kindly' in TEXT or 'propose' in LEMMA or 'need' in LEMMA:
+            if 'suggest' in LEMMA or 'please' in LEMMA or 'kindly' in TEXT or 'propose' in LEMMA or 'need' in LEMMA:
                     v['class']='ACTIONABLE' 
                     #print('ACTIONABLE')
                if spacy_pos[0].tag_=='VB':
@@ -243,6 +239,10 @@ class Assignment:
                     elif spacy_pos[1].pos_=='NOUN':
                          #print('ACTIONABLE')
                          v['class']='ACTIONABLE'
+    
+            k1=0                                        
+            for token in spacy_pos:
+               #print(token.text, token.pos_, token.tag_, token.dep_)
 
                #send the ppt or send ppt 
                if spacy_pos[k1].tag_=='VB':
