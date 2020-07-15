@@ -417,8 +417,8 @@ class Assignment:
 
 if __name__=='__main__':
      Assign1=Assignment("C:/Users/lenovo/Downloads/Assignment_1/config.json")
-     #Assign1.data_preprocess()
-     #Assign1.SentenceClassificationUnsupervised()
+     Assign1.data_preprocess()
+     Assign1.SentenceClassificationUnsupervised()
      Assign1.SentenceClassificationSupervised()
      test_df=pd.read_csv(Assign1.config['TRAIN'])
      Assign1.predict_test(test_df)
