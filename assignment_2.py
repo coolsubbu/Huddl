@@ -28,146 +28,101 @@ import pickle
 def diff_timstamp():
        print(time.strftime("%Y-%m-%d-%H-%M",time.gmtime()))
 
-
 class Assignment:
 
     def __init__(self,config_file_url):
 
         print('loading models and input csv')
-
         print("loading spacy nlp  and tagger model ")
 
         self.nlp= spacy.load("en_core_web_sm")
         self.tagr=spacy.load('en')
-
-        
+       
         print("loaded spacy nlp tagger model ")
-
         assert self.nlp,' could not load spacy model'
         
         print('reading input csv and sanity check')
-
         self.config_file_handle=open(config_file_url,"r",encoding='utf-8')
          
         print(config_file_url)
-
         assert self.config_file_handle, ' Could not open config File'
     
         self.config= json.load(self.config_file_handle)
-
         print('loading input dataset')
 
         self.input_data=pd.read_csv(self.config["DataURL"],keep_default_na=False,encoding='latin-1')
 
         self.input_df =self.input_data
-
         assert not self.input_data.empty, "Could not read input dataset or input_data empty" 
         
         print('loaded input csv')
-
-        self.sentence_df={}   
-                                               
+        self.sentence_df={}          
         self.basPath=self.config["BASEPATH"]
-
         self.sup_sentence_df={}
-
         self.ML_model=None
         
     def data_preprocess(self):
        
        i1=0
        sentence_df_list=[]
-       sentence_df_dict={}
-                 
+       sentence_df_dict={}                 
        print(time.asctime())       
        for i,v in self.input_df.iterrows():
-         
-          v_dict={}
-
+          v_dict={}              
           mail_strings=v['message'].split('\n')
 
           #removing fields and extracting only  mail text content
-     
           mail_strings=[s for s in mail_strings if not re.match(r'^\s+\w+\:\s+$',s)]
-
           if i%250==0:
                print('0:'+str(mail_strings)+'\n')
 
           mail_strings=[s for s in mail_strings if '----- Forwarded by' not in s]
-
           mail_strings=[re.sub(r'\<(.*?)\>',' ',s) for s in mail_strings] 
-                               
           mail_strings=[ s for s in mail_strings if not re.search(r'(\@ECT|\@enron.com)',s)]
-
           mail_strings=[re.sub('\"\"+','\"',s) for s in mail_strings]  
                       
           mail_strings=[ re.sub(r'(\<|\>|\-\-\-+|\\t)','',s)   for s in mail_strings]
-
           mail_strings=[ re.sub(r'\[image\]','',s) for s in mail_strings]
-
           mail_strings=[ re.sub(r'(\[\]\[\])+','',s) for s in mail_strings]
           
           if i%250==0:
                print('mail_strings:'+str(mail_strings)+'\n')
                diff_timstamp()
-               
           mail=' '.join(mail_strings)
-       
-          # splitting mail into sentences
+          # splitting mail into sentences 
+              
           mail=re.sub(r'(Mr|Ms|Dr|Prof|\d)\.','.',mail)
-
           mail=re.sub(r'(\.\.+)','.',mail)
-          
           sentences=re.split(r'((?=\D)\.\s\s*|\?\s+|\!\s+)',mail) 
-
           sentences=[s for s in sentences if not re.match(r'(\.|\?|\!)\s+',s)]
-
           sentences=[re.sub('\s+',' ',sentence) for sentence in sentences]
-          
           sentences=[s.lower() for s in sentences ]
-
           sentences=[re.sub(r'\=(\s|\d+)','',s) for s in sentences]
-
           sentences=[re.sub(r'\=(\d\w)','',s) for s in sentences]
               
               
-          sentences=[re.sub('\s(.*?)\@(.*?)\s',' ,',s) for s in sentences]
-          
+          sentences=[re.sub('\s(.*?)\@(.*?)\s',' ,',s) for s in sentences]          
           sentences=[s for s in sentences if not re.match(r'^\s*$',s)]
-
           sentences=[re.sub('(\+\++|\=\=+|--+|\~\~+|\?\?+|\*\*+|__+|\/\/+|\#\#+)',' ',s) for s in sentences]
-
           sentences=[re.sub('(\|\s)+',' ',s) for s in sentences]
-
           sentences=[re.sub('(-\=-)+',' ',s) for s in sentences]
 
           sentences=[re.sub('(\=\s+\=)+',' ',s) for s in sentences]
-        
           sentences=[re.sub('(\#\s)+',' ',s) for s in sentences]
-
           sentences=[re.sub(r'\[image\]','',s) for s in sentences]
 
           sentences=[re.sub(r'\(e-mail\)','',s) for s in sentences]
-
           sentences=[re.sub(r'\&nbsp','',s) for s in sentences]
-
           sentences=[re.sub(r'dd+','',s) for s in sentences]
-
-          sentences=[re.sub(r'\"\"','\"',s) for s in sentences]
-          
+          sentences=[re.sub(r'\"\"','\"',s) for s in sentences]          
           sentences=[re.sub(r', (, )+',',',s) for s in sentences]
-
-          sentences=[re.sub(r'\!\!+','!',s) for s in sentences]
-          
+          sentences=[re.sub(r'\!\!+','!',s) for s in sentences]          
           sentences=[re.sub(r'\s+',' ',s) for s in sentences]
-
-          sentences=[re.sub(r'\"\"','\"',s) for s in sentences]
-          
+          sentences=[re.sub(r'\"\"','\"',s) for s in sentences]          
           sentences=[s for s in sentences if len(s.split(' '))>2]
 
           if i%250==0:
              print(str(sentences)+'\n')
-          
           for sentence in sentences:
                sentence_df_dict={}
                if len(sentences)>2:
@@ -179,38 +134,30 @@ class Assignment:
           if i1>20000:
             break
           i1=i1+1
-
        self.sentence_df=pd.DataFrame(sentence_df_list,columns=list(sentence_df_list[0].keys()))
-
        assert len(self.sentence_df)>0 , ' sentence df extracted is empty '  
-        
+       
        self.sentence_df.to_csv(self.basPath+"sentences_571.csv")
-
-          
+       
     def SentenceClassificationUnsupervised(self):
 
         sentence_cls_df_dict={}
         sentence_cls_df_list=[]
-
         #self.sentence_df=pd.read_csv(self.basPath+'sentences_s.csv')
-        
         for i,v in self.sentence_df.iterrows():
             sentence=v['sentence']
             v['class']='empty'
             if 'your thoughts' in sentence or 'kindly' in sentence or 'as discussed' in sentence or 'needs to' in sentence or 'let me know' in sentence: 
-                v['class']='ACTIONABLE'
-                
+                v['class']='ACTIONABLE'                
             if 'better if' in sentence or 'need' in sentence or 'could use' in sentence or "make sure" in sentence:
-               v['class']='ACTIONABLE' 
-               #print('ACTIONABLE')
               
+               v['class']='ACTIONABLE' 
+               #print('ACTIONABLE')   
             spacy_pos=self.nlp(sentence)
             #print(sentence)
             DEP=[tok.dep_ for tok in spacy_pos]
-            TEXT=[tok.text for tok in spacy_pos]
-            
+            TEXT=[tok.text for tok in spacy_pos]           
             LEMMA=[tok.lemma_ for tok in spacy_pos]
-                
             POS=[tok.pos_ for tok in spacy_pos]
             TAG=[tok.tag_ for tok in spacy_pos]
             v['TAG']=TAG
@@ -256,11 +203,8 @@ class Assignment:
                          v['class']='ACTIONABLE'
                   if k1+1<len(spacy_pos) and (spacy_pos[k1+1].pos_=='PRON' or spacy_pos[k1+1].pos_=='IN' or spacy_pos[k1+1].pos_=='TO'):
                          v['class']='ACTIONABLE'
-                         
-
                #can you send 
                if spacy_pos[k1].tag_=='MD':
-                    
                     if k1+1<len(spacy_pos) and spacy_pos[k1+1].tag_=='PRP':
                          if k1+2<len(spacy_pos) and spacy_pos[k1+2].pos_=='VERB':
                               #print('ACTIONABLE')
@@ -270,8 +214,7 @@ class Assignment:
                 v['class']='NON-ACTIONABLE'
                 v['class_int']=0
             else:
-                v['class_int']=1
-                
+                v['class_int']=1                
             sentence_cls_df_list.append(v)
         sentence_cls_df=pd.DataFrame(sentence_cls_df_list,columns=list(sentence_cls_df_list[0].keys()))
         sentence_cls_df.to_csv(self.basPath+'sentence_classified_sb.csv')
@@ -279,59 +222,36 @@ class Assignment:
         sentence_cls_file_df.to_csv(self.basPath+'sentence_classified_file_1.csv')
 
         assert len(sentence_cls_file_df)>0 , ' empty sentence classified dataframe'  
-        
                                     
     def SentenceClassificationSupervised(self):
-
-         
         MAX_NB_WORDS = 50000
-
         print(time.asctime())
-
         print('reading labeled csv and tokenizing')
-
         #df=pd.read_csv(self.basPath+'TRAIN_1.csv')
-
         self.sup_sentence_df=pd.read_csv(self.config['TRAIN'])
-
         df=self.sup_sentence_df
         
-        assert len(df)>0 ,' empty TRAIN FILE'
-        
+        assert len(df)>0 ,' empty TRAIN FILE'        
         #build a tokenizer 
         self.tokenizer = Tokenizer(num_words=MAX_NB_WORDS, filters='!"#$%&()*+,-./:;<=>?@[\]^_`{|}~', lower=True)
-
         #tokenising the sentences
-        
         self.tokenizer.fit_on_texts(df['sentence'].values)
-
         word_index = self.tokenizer.word_index
-
         print('read words and tokenized')
-
         print(time.asctime())
-
         # load the dataset but only keep the top n words, zero the rest
 
-        top_words = 50000
-                                                  
+        top_words = 50000                                                  
         #convert sentence array to a sequence of integers
-        
         X = self.tokenizer.texts_to_sequences(df['sentence'].values)
-
-
         Y = df['class_int'].values
-
         X_train, X_test, Y_train, Y_test = train_test_split(X,Y, test_size = 0.2, random_state = 42)
-
         #print('Shape of data tensor:', X.shape)
-
         print(X_train[0])
         print(Y_train[0])
-
-        #maximum length of a sequence 50 words
-        max_length = 50
-        
+        #maximum length of a sequence 50 words 
+              
+        max_length = 50        
         X_train = sequence.pad_sequences(X_train, maxlen=max_length)
         X_test = sequence.pad_sequences(X_test, maxlen=max_length)
 
@@ -362,51 +282,37 @@ class Assignment:
 
         self.ML_model=model
         
-        # catch the metriccs of evaluation for Classification
-        
+        # catch the metrics of evaluation for Classification        
         tn,fp,fn,tp=sm.confusion_matrix(Y_test,Y_pred).ravel()
 
         precision=tp/(tp+fp)
-        recall=tp/(tp+fn)
-        
+        recall=tp/(tp+fn)       
         f1=2*precision*recall/(precision+recall)
 
         print("PRECISION: %.2f%%" % precision)
         print("RECALL: %.2f%%" % recall)
         print("F1 SCORE: %.2f%%" % f1)
-
         #df['PREDICTION']=Y_pred
 
         pickle.dump(self.tokenizer,open(self.basPath+"tokenizer.h5","wb")) 
-
         model.save(self.basPath+'model')
-        
         self.sup_sentence_df.to_csv(self.basPath+'PREDICTION.csv')
 
     def predict_test(self,test_df):
 
-        self.tokenizer=pickle.load(open(self.basPath+'tokenizer.h5',"rb"))
-         
+       
+        self.tokenizer=pickle.load(open(self.basPath+'tokenizer.h5',"rb"))         
         Test_sequences = self.tokenizer.texts_to_sequences(test_df['sentence'].values)
-
         Test_output =test_df['class_int'].values
-
         max_length=50
-    
         Test_pad_sequences=sequence.pad_sequences(Test_sequences,maxlen=max_length)
-
         model_=keras.models.load_model(self.basPath+'model')
-
         Y_pred=model_.predict_classes(Test_pad_sequences)
-
         test_df['Prediction']=Y_pred
-
         tn,fp,fn,tp=sm.confusion_matrix(test_df['class_int'].values,Y_pred).ravel()
 
         precision = tp/(tp+fp)
-
         recall=tp/(tp+fn)
-    
         f1=2*precision*recall/(precision+recall)
 
         print("PRECISION: %.2f%%" % precision)
