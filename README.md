@@ -57,7 +57,7 @@ g. Run the Supervised Classification from the object.
     
     * Result of the Unsupervised Classification and Actions file are both imbibed into Training file.
     
-    * The Training File is string indexed using a Tokenizer and spllit into Train / Test using train_test_split strategy.
+    * The Training File is string indexed using a Tokenizer and split into Train / Test using train_test_split strategy.
     
     * a Sequential Keras model with Embedding + Convolution + LSTM (100 units) + Dense +Sigmoid is constructed 
     
@@ -67,7 +67,6 @@ h. Run the api.py to start the server.
 
 i) go to http:/localhost:5000/api/sentence_classify?sentence=<<sentence>>
    
-
 LOADING THE MODEL TO PREDICT:
 
 It is a Keras model . It can be loaded by " keras.models.load_model(<<my_model>>) "
