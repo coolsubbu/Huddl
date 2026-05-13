@@ -1,138 +1,138 @@
-# Huddl
-A Project for classification of sentences as actionable or non-actionable
+# Huddl project : classification of sentences as actionable or non-actionable
 
 This project consists of both supervised and unsupervised methods of classifying a sentence into actionable or non-actionable.
 
-PIPELINE:
+Pipeline:
 
-a)Data Preparation 
+a)data preparation 
 
-b)Feature Extraction 
+b)feature extraction 
 
-c)Classification Unsupervised
+c)classification unsupervised
 
-d) Classification Supervised
+d) classification supervised
 
-e) API creation
+e) api creation
 
-f) API Verification
+f) api verification
 
-A. Data Preparation:
+A. data preparation:
 
-   a.Read the csv
+   a. read csv
    
-   b.For each mail, remove the fields of the email such as From,To
+   b. for each mail, remove the fields of the email such as from, to
    
-   c.Extract the mail content 
+   c.extract the mail content 
    
-B.Feature Extraction:
+B.feature extraction:
     
-    Using spacy tagger to find out Parts of speech and dependency parser in addition to lemmatization.
+    using spacy tagger to find out parts of speech and dependency parser in addition to lemmatization.
 
-c) Classification Unsupervised:
+c) classification unsupervised:
     
-    Using manual defined rules to classify the Sentences into ACTIONABLE and UNACTIONABLE
+    using manual defined rules to classify the sentences into actionable and unactionable
  
- d) Classification Supervised (LSTM and Convolutional NN):
+ d) classification supervised ( long short term memory network  and convolutional neural network ):
      
-     Using LSTM+CNN Classifier to classify the sentences into ACTIONABLE or NON-ACTIONABLE with training data from Unsupervisedd Classification.
+     using lstm + cnn classifier to classify the sentences into actionable or non actionable with training data from unsupervisedd classification.
      
-STEPS TO EXECUTE : 
+steps to execute : 
 
-a. Install the required set of python packages: pip install -r requirements.txt  
+a. install the required set of python packages: pip install -r requirements.txt  
 
-b. Config file in json which points to input dataset,train,test files and url of basepath where the output will be stored.
+b. config file in json which points to input dataset,train,test files and url of basepath where the output will be stored.
 
-c. Create an object of Class Assignment with url of the config file.
+c. create an object of class assignment with url of the config file.
 
-d. Download SPACY MODEL for Parts Of Speech Tagging , Dependency parser and Lemmatization.
+d. download spacy model for parts of speech tagging , dependency parser and lemmatization.
 
-e. run the Data Process method from the object.
+e. run the data process method from the object.
 
-f. Run the SentenceClassification (Unsupervised) from the object.
+f. run the sentence classification ( unsupervised ) from the object.
 
-g. Run the Supervised Classification from the object.
+g. run the supervised classification from the object.
 
-    LSTM+CNN Supervised Sentence Classification :
+    lstm + cnn supervised sentence classification :
     
-    * Result of the Unsupervised Classification and Actions file are both imbibed into Training file.
+    * result of the unsupervised classification and actions file are both imbibed into training file.
     
-    * The Training File is string indexed using a Tokenizer and split into Train / Test using train_test_split strategy.
+    * the training file is string indexed using a tokenizer and split into train / test using train_test_split strategy.
     
-    * a Sequential Keras model with Embedding + Convolution + LSTM (100 units) + Dense +Sigmoid is constructed 
+    * a sequential keras model with embedding + convolution + lstm (100 units) + dense + sigmoid is constructed 
     
-    * model is fit to train data and evaluated with Test Data.
+    * model is fit to train data and evaluated with test data.
 
-h. Run the api.py to start the server.
+h. run the api.py to start the server.
 
 i) go to http:/localhost:5000/api/sentence_classify?sentence=<<sentence>>
    
-LOADING THE MODEL TO PREDICT:
+loading the model to predict:
 
-It is a Keras model . It can be loaded by " keras.models.load_model(<<my_model>>) "
+It is a keras model . It can be loaded by " keras.models.load_model(<<my_model>>) "
 
 
-CHALLENGES IN DATA PREPARATION:  
+challenges in data preparation:  
 
-   a. Sentence and field separation. Fields such as From / To are separated by '\n' whereas sentences are separated by period. Along with that period also comes in salutations ('Mr.' and  sequences indices such as '1.' )
+   a. sentence and field separation. fields such as from / to are separated by '\n' whereas sentences are separated by period. 
+       along with that period also comes in salutations ('Mr.' and  sequences indices such as '1.' )
    
    b. mail ids in text
    
-   c. Forwarding text of a mail
+   c. forwarding text of a mail
    
-   d. HTML links and html tags in mail
+   d. html links and html tags in mail
    
-   e.  different types of marking of EOM. " ******* " / " _______" /-=-=-=-=-=-=-=-=-=-=- "
+   e. different types of marking of eom . " ******* " / " _______" /-=-=-=-=-=-=-=-=-=-=- "
    
    f. remnants and residuals of solutions to above issues.
    
-   g. Verifying the sentences above 100k sentences
+   g. verifying the sentences above 100k sentences
  
 
-RESULTS on TEST SET FROM LSTM + CNN Sentence Classifier:
+results on test set from lstm + cnn sentence classifier:
 
-TOTAL NUMBER OF RECORDS: ~145k  
+total number of records: ~145k  
 
-ACTIONABLE:~60k         
+actionable:~60k         
 
-NON-ACTIONABLE:~85k
+non actionable:~85k
 
-PRECISION = 0.96
+precision = 0.96
 
-RECALL = 0.97  
+recall = 0.97  
 
-F1 = 2PR/(P+R) = 0.96
+f1 = 2PR/(P+R) = 0.96
 
-TRAINED MODEL: 
+trained model: 
 
 It is of size 56MB and highest github could handle is only 25MB. 
 
-It is present in this Google drive link : https://drive.google.com/file/d/1dv2pM2hgPI5kEwJFKMklAgF0NPnPKbhc/view?usp=drive_web
+It is present in this google drive link : https://drive.google.com/file/d/1dv2pM2hgPI5kEwJFKMklAgF0NPnPKbhc/view?usp=drive_web
 
-NOTE: The model needs to be used along with the tokenizer to classify a sentence into Actionable/NON-Actionable.     
+note: the model needs to be used along with the tokenizer to classify a sentence into actionable/non actionable.     
 
 
-API: Converts the model into an API
+API: host model
 
 
 ![image](https://user-images.githubusercontent.com/1144567/87305515-41bb8100-c534-11ea-8e2f-931a974d544c.png)
 
 ![image](https://user-images.githubusercontent.com/1144567/87305806-b2fb3400-c534-11ea-972c-8a0bcb550d52.png)
 
-STEPS TO EXECUTE FOR API:
+steps to execute for api : 
 
-a.Go to api.py
+a.go to api.py
 
-b. Load the Model 
+b.load the model 
 
-c. Load the Tokenizer
+c.load the tokenizer
 
 d. execute api.run() to run the server.
 
 e.  go to browser and type http://localhost:5000/api/sentence_classify?sentence='please mail back'           
 
 
-REFERENCES :
+references :
          
 1.https://towardsdatascience.com/multi-class-text-classification-with-lstm-using-tensorflow-2-0-d88627c10a35
       
